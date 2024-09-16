@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load static tailwind_tags %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% tailwind_css %}
+  <title>Document</title>
+</head>
+<body>
+  <nav class="container relative p-6 mx-auto">
+    <div class="flex items-center justify-between">
+      <div class="pt-2">
+        <h1 class="text-red-500 text-4xl">Trendify</h1>
+      </div>
+      <div class="hidden md:flex space-x-6">
+        <a href="#" class="hover:text-red-300">Trending</a>
+        <a href="#" class="hover:text-red-300">News</a>
+        <a href="#" class="hover:text-red-300">Shor-Videos</a>
+        <a href="#" class="hover:text-red-300">Community</a>
+      </div>
+      <a href="#" class="hidden p-3 px-6 pt-2 text-white bg-red-500 hover:bg-red-300 rounded-full baseline md:block">Join Trendify</a>
+    </div>
+  </nav>
+  <!-- Main -->
+   <div class="container flex flex-col mt-10 mx-auto space-x-6 md:flex-row">
+    <!-- Left item -->
+    <div class="hidden md:flex flex-col items-center border border-red-500 md:w-1/5">
+      Left item
+    </div>
+    <!-- Middle item -->
+     <div class="flex flex-col pl-6 md:w-1/2 mx border border-red-400">
+      Middle item
+     </div>
+     <!-- Right item -->
+      <div class="hidden md:flex items-center flex-col border border-red-500 md:w-1/4">
+        Right item
+      </div>
+   </div>
+</body>
+</html>
