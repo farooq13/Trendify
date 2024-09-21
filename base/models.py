@@ -49,17 +49,17 @@ class UserProfile(models.Model):
   bio = models.TextField(null=True, blank=True)
   birth_date = models.DateField(null=True, blank=True)
   picture = models.ImageField(upload_to='uploads/profile_pictures', default='uploads/profile_pictures/avatar.svg')
-  followers = models.ManyToManyField(User, related_name='followers', null=True, blank=True)
+  followers = models.ManyToManyField(User, related_name='followers',blank=True)
 
   def __str__(self):
     return self.name
   
 
 @receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, *args, **kwargs):
+def create_user_profile(sender, instance, created, **kwargs):
   if created:
     UserProfile.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
-def save_user_profile(sender, instance, *args, **kwargs):
+def save_user_profile(sender, instance, **kwargs):
   instance.profile.save()
