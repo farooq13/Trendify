@@ -43,17 +43,16 @@ class Comment(models.Model):
     return self.comment
   
 class UserProfile(models.Model):
-  user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE, related_name='profile', verbose_name='user')
-  name = models.CharField(max_length=200)
-  location = models.CharField(max_length=100, null=True, blank=True)
-  bio = models.TextField(null=True, blank=True)
+  user = models.OneToOneField(User, primary_key=True, verbose_name='user', related_name='profile', on_delete=models.CASCADE)
+  name = models.CharField(max_length=100, null=True, blank=True)
+  location = models.CharField(max_length=50, null=True, blank=True)
+  bio = models.TextField(max_length=200, null=True, blank=True)
   birth_date = models.DateField(null=True, blank=True)
   picture = models.ImageField(upload_to='uploads/profile_pictures', default='uploads/profile_pictures/avatar.svg')
-  followers = models.ManyToManyField(User, related_name='followers',blank=True)
+  followers = models.ManyToManyField(User, related_name='followers', blank=True)
 
   def __str__(self):
     return self.name
-  
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
