@@ -1,0 +1,22 @@
+{% include 'base.html' %}
+<div class="container relative mx-auto p-6">
+  <div class="flex flex-row">
+    <div class="flex flex-row border border-teal-900 p-6 mb-16 items-center justify-center shadow bg-white mx-auto w-full">
+      <div class="mb-32 space-y-3 md:w-1/2">
+        <h1>Name: {{user.name}}</h1>
+        <h2>Username: {{user.username}}</h2>
+        <p>Bio: {{user.bio}}</p>
+        <p>Location: {{user.location}}</p>
+      </div>
+      <div class="flex border border-l-teal-950 md:w-1/2">
+        <img src="{{user.profile.picture.url}}" alt="">
+      </div>
+      <br>
+      
+    </div>
+    
+  </div>
+  <div class="max-w-1/2">
+    {% include 'base/post_component.html' %}
+  </div>
+</div>

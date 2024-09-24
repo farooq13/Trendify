@@ -134,8 +134,8 @@ class CommentEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
   template_name = 'base/comment_edit.html'
 
   def get_success_url(self):
-    pk = self.kwargs['pk']
-    return reverse_lazy('post-detail', kwargs={'pk':pk})
+    post_pk = self.kwargs['post_pk']
+    return reverse_lazy('post-detail', kwargs={'pk':post_pk})
   
   def test_func(self):
     comment = self.get_object()
@@ -148,3 +148,17 @@ class CommentDelete(LoginRequiredMixin, DeleteView):
   def get_success_url(self):
     post_pk = self.kwargs['post_pk']
     return reverse_lazy('post-detail', kwargs={'pk': post_pk})
+  
+
+class Profile(View):
+  def get(self, request, pk, *args, **kwargs):
+    profile = get_object_or_404(UserProfile, pk=pk)
+    user = profile.user
+    posts = Post.objects.filter(author=user).all()
+    context = {
+      'profile': profile,
+      'user': user,
+      'posts': posts
+    }
+
+    return render(request,'base/profile.html', context)

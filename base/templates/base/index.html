@@ -7,6 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://kit.fontawesome.com/a13e3d893a.js" crossorigin="anonymous"></script>
+  
   {% tailwind_css %}
   <title>Document</title>
 </head>
@@ -20,27 +21,7 @@
                 <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200">Post</button>
                 
             </form>
-
-            <div class="space-y-4">
-                {% for post in posts %}
-                <div class="bg-white p-4 rounded-lg shadow">
-                    {% if request.user == user %}
-                    <div class="md:flex justify-end space-x-6">
-                        <a href="{% url 'post-delete' post.id %}"><i class="fa-regular fa-trash-can"></i></i></a>
-                        <a href="{% url 'post-edit' post.id %}"><i class="fa-regular fa-pen-to-square"></i></a>
-                    </div>
-                    {% endif %}
-                    <h3 class="font-bold">@{{post.author.username}} {{ post.author.name }} <span>{{ post.created_on|timesince }}</span></h3>
-                    <p><a href="{% url 'post-detail' post.id %}">{{ post.body }}</a></p>
-                    <div class="flex flex-row space-x-12 mt-8 mx-6">
-                        <button><i class="fa-regular fa-thumbs-up"></i></button>
-                        <button><i class="fa-regular fa-thumbs-down"></i></button>
-                        <button><i class="fa-regular fa-comment"></i></button>
-                        <button><i class="fa-solid fa-share"></i></button>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
+            {% include 'base/post_component.html' %}
         </div>
 
         <div class="w-1/3">

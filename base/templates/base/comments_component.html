@@ -5,7 +5,7 @@
     </div>
     {% for comment in comments %}
     <div class="space-y-4">
-      <div class="bg-gray-50 p-4 rounded-lg shadow pl-4 border border-l-green-700">
+      <div class="bg-gray-50 p-4 rounded-lg shadow pl-4 border border-l-red-700">
         {% if request.user == user %}
           <div class="md:flex justify-end space-x-6">
             <a href="{% url 'comment-delete' post.pk comment.pk %}"><i class="fa-regular fa-trash-can"></i></i></a>
