@@ -3,9 +3,9 @@
   <div class="flex items-center justify-center border border-red-500 max-w-md rounded mx-auto mt-10 p-12 bg-white">
     <form action="" method="POST">
       {% csrf_token %}
-      <p class="text-4xl text-red-700">Are you sure you want to delete the post?</p>
+      <p class="text-4xl text-red-700">Are you sure you want to delete the Comment?</p>
       <div class="flex flex-row space-x-12 mt-32 justify-center">
-      <button><a href="{{ request.META.HTTP_REFERER}}" class="text-white bg-red-600 p-2 px-6 hover:bg-red-700">Cancel</a></button>
+      <button><a href="{{ request.META.HTTP_REFERER }}" class="text-white bg-red-600 p-2 px-6 hover:bg-red-700">Cancel</a></button>
       <button type="submit" class="text-pretty  text-white bg-red-700 p-2 baseline px-12 hover:bg-red-800 hover:w-1/2 text-center">Delete</button>
     </div>
     </form>

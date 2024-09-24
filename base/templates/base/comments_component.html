@@ -1,0 +1,29 @@
+<div class="container relative p-6">
+  <div>
+    <div>
+      <h3 class="flex justify-center text-lg ">Replies</h3>
+    </div>
+    {% for comment in comments %}
+    <div class="space-y-4">
+      <div class="bg-gray-50 p-4 rounded-lg shadow pl-4 border border-l-green-700">
+        {% if request.user == user %}
+          <div class="md:flex justify-end space-x-6">
+            <a href="{% url 'comment-delete' post.pk comment.pk %}"><i class="fa-regular fa-trash-can"></i></i></a>
+            <a href="{% url 'comment-edit' post.pk comment.pk %}"><i class="fa-regular fa-pen-to-square"></i></a>
+          </div>
+        {% endif %}
+
+          <h3 class="font-bold">@{{comment.author.username}} {{ comment.author.name }} <span>{{ comment.created_on|timesince }}</span></h3>
+          <p class="mt-4"><a href="{% url 'post-detail' post.pk %}">{{ comment }}</a></p>
+          <div class="flex flex-row space-x-12 mt-8 mx-6">
+            <button><i class="fa-regular fa-thumbs-up"></i></button>
+            <button><i class="fa-regular fa-thumbs-down"></i></button>
+            <button><i class="fa-regular fa-comment"></i></button>
+            <button><i class="fa-solid fa-share"></i></button>
+        </div>
+      </div>
+  </div>
+  <br>
+    {% endfor %}
+  </div>
+</div>

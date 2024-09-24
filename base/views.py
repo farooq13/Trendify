@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views import View
 from django.views.generic.edit import UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post, Comment, UserProfile
 from django.db.models import Q
@@ -42,8 +43,8 @@ class PostList(View):
   
 
 class PostDetail(View, LoginRequiredMixin):
-  def get(self, request, post_id, *args, **kwargs):
-    post = Post.objects.get(id=post_id)
+  def get(self, request, pk, *args, **kwargs):
+    post = get_object_or_404(Post, pk=pk)
     form = CommentForm()
     comments = Comment.objects.filter(post=post)
     
@@ -54,8 +55,8 @@ class PostDetail(View, LoginRequiredMixin):
     }
     return render(request, 'base/post_detail.html', context)
   
-  def post(self, request, post_id, *args, **kwargs):
-    post = Post.objects.get(id=post_id)
+  def post(self, request, pk, *args, **kwargs):
+    post = get_object_or_404(Post, pk=pk)
     form = CommentForm(request.POST)
 
     if form.is_valid():
@@ -76,8 +77,8 @@ class PostEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
   fields = ['body']
 
   def get_success_url(self):
-    id = self.kwargs['id']
-    return reverse_lazy('post-detail', kwargs={'id':id})
+    pk = self.kwargs['pk']
+    return reverse_lazy('post-detail', kwargs={'pk':pk})
   
   def test_func(self):
     post = self.get_object()
@@ -86,9 +87,64 @@ class PostEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
   model = Post
-  template_name = 'base/delete_post.html'
+  template_name = 'base/post_delete.html'
   success_url = reverse_lazy('home')
+  
 
   def test_func(self):
     post = self.get_object()
     return self.request.user == post.author
+  
+
+class CommentReply(LoginRequiredMixin, View):
+  def get(self, reqeust, post_pk, pk, *args, **kwargs):
+    post = Post.objects.get(pk=post_pk)
+    parent_comment = Comment.objects.get(pk=pk)
+    form = Comment()
+
+    context = {
+      'post': post,
+      'parent_comment': parent_comment,
+      'form': form,
+    }
+
+  def post(self, request, post_pk, pk, *args, **kwargs):
+    post = Post.objects.get(pk=post_pk)
+    parent_comment = Comment.objects.get(pk=pk)
+    form = CommentForm(request.POST)
+
+    if form.is_valid():
+      reply = form.save(commit=False)
+      reply.paren_comment = parent_comment
+      reply.post = post
+      reply.author = request.user
+      reply.save()
+
+    context = {
+      'post': post,
+      'parent_comment': parent_comment,
+      'form': form
+    }
+
+    return render(request, 'base/comment_reply.html', context)
+  
+class CommentEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+  model = Comment
+  fields = ['comment']
+  template_name = 'base/comment_edit.html'
+
+  def get_success_url(self):
+    pk = self.kwargs['pk']
+    return reverse_lazy('post-detail', kwargs={'pk':pk})
+  
+  def test_func(self):
+    comment = self.get_object()
+    return self.request.user == comment.author
+
+class CommentDelete(LoginRequiredMixin, DeleteView):
+  model = Comment
+  template_name = 'base/comment_delete.html'
+
+  def get_success_url(self):
+    post_pk = self.kwargs['post_pk']
+    return reverse_lazy('post-detail', kwargs={'pk': post_pk})
