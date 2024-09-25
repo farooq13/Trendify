@@ -14,17 +14,17 @@
 <body class="max-w-screen bg-slate-500">
     {% include 'base/navbar.html' %}
     <main class="container mx-auto py-8 px-4 flex">
-        <div class="w-2/3 pr-8">
+        <div class="md:w-2/3 pr-8 md:block w-full">
             <form class="mb-8" method="POST" accept="">
                 {% csrf_token %}
-                {% render_field form.body  placeholder="Speak your voice" rows=3 class+="w-full p-4 rounded-lg border border-gray-300 resize-none" %}
+                {% render_field form.body  placeholder="What is happening around you?" rows=3 class+="w-full p-3 rounded-lg border border-gray-300 resize-none" %}
                 <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200">Post</button>
                 
             </form>
             {% include 'base/post_component.html' %}
         </div>
 
-        <div class="w-1/3">
+        <div class="hidden md:w-1/3 md:block">
             <div class="bg-white p-4 rounded-lg shadow mb-4">
                 <h2 class="font-bold mb-4">Search</h2>
                 <div class="relative">
