@@ -1,22 +1,52 @@
 {% include 'base.html' %}
 <div class="container relative mx-auto p-6">
   <div class="flex flex-row">
-    <div class="flex flex-row border border-teal-900 p-6 mb-16 items-center justify-center shadow bg-white mx-auto w-full">
-      <div class="mb-32 space-y-3 md:w-1/2">
+    <div class="flex flex-row p-6 mb-16 mx-auto w-full">
+      <div class="mb-32 space-y-3 md:w-1/2 bg-gray-100 p-6 rounded-s-lg h-full">
+        <div class="flex justify-end">
+          <a href="{% url 'profile-edit' profile.pk %}"><i class="fa-regular fa-pen-to-square"></i></a>
+        </div>
         <h1>Name: {{user.name}}</h1>
         <h2>Username: {{user.username}}</h2>
         <p>Bio: {{user.bio}}</p>
         <p>Location: {{user.location}}</p>
       </div>
-      <div class="flex border border-l-teal-950 md:w-1/2">
-        <img src="{{user.profile.picture.url}}" alt="">
+      <div class="flex md:w-1/2 rounded-s-lg">
+        <img src="{{user.profile.picture.url}}" alt="" >
       </div>
       <br>
       
     </div>
-    
-  </div>
-  <div class="max-w-1/2">
-    {% include 'base/post_component.html' %}
-  </div>
 </div>
+<main class="container mx-auto py-8 px-4 flex">
+  <div class="md:w-2/3 pr-8 md:block w-full">
+      {% include 'base/post_component.html' %}
+  </div>
+
+  <div class="hidden md:w-1/3 md:block">
+      <div class="bg-white p-4 rounded-lg shadow mb-4">
+          <h2 class="font-bold mb-4">Explore users</h2>
+          <div class="relative">
+              <input type="text" placeholder="Search @username" class="w-full p-2 rounded-lg border border-gray-300 pl-10">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+          </div>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow">
+          <h2 class="font-bold mb-4">Who to follow</h2>
+          <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                  <span>@techguru</span>
+                  <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm">Follow</button>
+              </div>
+              <div class="flex items-center justify-between">
+                  <span>@travelblogger</span>
+                  <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm">Follow</button>
+              </div>
+              <div class="flex items-center justify-between">
+                  <span>@foodielove</span>
+                  <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm">Follow</button>
+              </div>
+          </div>
+      </div>
+  </div>
+</main>
