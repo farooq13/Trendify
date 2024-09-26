@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="space-y-4 max-w-2/3">
   {% for post in posts %}
   <div class="bg-white p-4 rounded-lg shadow">
       {% if request.user == user %}
@@ -12,7 +12,9 @@
       <div class="flex flex-row space-x-12 mt-8 mx-6">
           <button><i class="fa-regular fa-thumbs-up"></i></button>
           <button><i class="fa-regular fa-thumbs-down"></i></button>
-          <button><i class="fa-regular fa-comment"></i></button>
+          <button>
+            <a href="{% url 'post-detail' post.pk %}"><i class="fa-regular fa-comment"></i></a>
+        </button>
           <button><i class="fa-solid fa-share"></i></button>
       </div>
   </div>

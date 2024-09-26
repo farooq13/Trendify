@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic.edit import UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post, Comment, UserProfile
 from django.db.models import Q
-from .forms import PostForm, CommentForm
+from .forms import PostForm, CommentForm, ProfileForm
 
   
 class PostList(View):
@@ -97,36 +97,19 @@ class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
   
 
 class CommentReply(LoginRequiredMixin, View):
-  def get(self, reqeust, post_pk, pk, *args, **kwargs):
-    post = Post.objects.get(pk=post_pk)
-    parent_comment = Comment.objects.get(pk=pk)
-    form = Comment()
-
-    context = {
-      'post': post,
-      'parent_comment': parent_comment,
-      'form': form,
-    }
-
   def post(self, request, post_pk, pk, *args, **kwargs):
     post = Post.objects.get(pk=post_pk)
     parent_comment = Comment.objects.get(pk=pk)
     form = CommentForm(request.POST)
 
     if form.is_valid():
-      reply = form.save(commit=False)
-      reply.paren_comment = parent_comment
-      reply.post = post
-      reply.author = request.user
-      reply.save()
-
-    context = {
-      'post': post,
-      'parent_comment': parent_comment,
-      'form': form
-    }
-
-    return render(request, 'base/comment_reply.html', context)
+      new_comment = form.save(commit=False)
+      new_comment.post = post
+      new_comment.parent = parent_comment
+      new_comment.author = request.user
+      new_comment.save()
+      
+      return redirect('post-detail', pk=post_pk)
   
 class CommentEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
   model = Comment
@@ -155,10 +138,25 @@ class Profile(View):
     profile = get_object_or_404(UserProfile, pk=pk)
     user = profile.user
     posts = Post.objects.filter(author=user).all()
+    form = ProfileForm(request.POST, request.FILES)
     context = {
       'profile': profile,
       'user': user,
-      'posts': posts
+      'posts': posts,
+      'form': form
     }
 
     return render(request,'base/profile.html', context)
+  
+class ProfileEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+  model = UserProfile
+  fields = ['picture', 'name', 'bio', 'location', 'birth_date']
+  template_name = 'base/profile_edit.html'
+
+  def get_success_url(self):
+    pk = self.kwargs['pk']
+    return reverse_lazy('profile', kwargs={'pk':pk})
+  
+  def test_func(self):
+    profile = self.get_object()
+    return self.request.user == profile.user
