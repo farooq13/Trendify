@@ -1,21 +1,20 @@
 {% include 'base.html' %}
 {% load widget_tweaks %}
-<div class="container relative mx-auto p-6 bg-white mt-6 w-1/2 rounded-lg">
+<div class="container relative mx-auto p-6 mt-6 md:w-1/2 rounded-lg">
   <div class="flex flex-row space-y-0">
-    <div class="flex flex-col py-32 space-y-6 text-black text-lg ml-6">
-      <label for="picture">Picture</label>
-      <label for="name">Name:</label>
-      <label for="bio" class="pt-4">Bio:</label>
-      <label for="location" class="pt-6">Location:</label>
-      <label for="birth_date">Date of birth:</label>
-    </div>
+    
         <form action="" method="POST" enctype="multipart/form-data">
           {% csrf_token %}
-          <div class="flex flex-col items-start space-y-4 px-12 text-black">
+          <div class="flex flex-col items-start space-y-4 px-12 text-black bg-white md:w-full">
+            <label for="picture" class="md:hidden">Picture</label>
             {% render_field form.picture rows=2 class+="rounded-lg border border-gray-300 resize-none" %}
+            <label for="name">Name:</label>
             {% render_field form.name  rows=2 class+="rounded-lg border border-gray-300 resize-none" %}
+            <label for="bio" class="pt-4">Bio:</label>
             {% render_field form.bio rows=2 class+="rounded-lg border border-gray-300 resize-none" %}
+            <label for="location" class="pt-6">Location:</label>
             {% render_field form.location rows=2 class+="rounded-lg border border-gray-300 resize-none" %}
+            <label for="birth_date">Date of birth:</label>
             {% render_field form.birth_date rows=2 class+="rounded-lg border border-gray-300 resize-none" %}
             <button type="submit" class="justify-center bg-blue-500 px-32 p-3 text-white hover:bg-blue-600">Update</button>
             <button  class="justify-center  px-32 p-3 text-blue-500 hover:bg-blue-500 hover:text-white"><a href="{{ request.META.HTTP_REFERER }}">Cancel</a></button>
