@@ -135,28 +135,45 @@ class CommentDelete(LoginRequiredMixin, DeleteView):
 
 class Profile(View):
   def get(self, request, pk, *args, **kwargs):
-    profile = get_object_or_404(UserProfile, pk=pk)
+    profile = UserProfile.objects.get(pk=pk)
     user = profile.user
-    posts = Post.objects.filter(author=user).all()
-    form = ProfileForm(request.POST, request.FILES)
-    context = {
-      'profile': profile,
-      'user': user,
-      'posts': posts,
-      'form': form
-    }
+    posts = Post.objects.filter(author=user)
+    followers = profile.followers.all()
+    num_of_followers = len(followers)
 
-    return render(request,'base/profile.html', context)
+    is_following = False
+    for follower in followers:
+      if follower == request.user:
+        is_following = True
+      else:
+        is_following = False
+
+    context = {'profile': profile, 'user': user, 'posts': posts, 'followers': followers, 'num_of_followers': num_of_followers, 'is_following': is_following}
+    return render(request, 'base/profile.html', context)
   
 class ProfileEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
   model = UserProfile
-  fields = ['picture', 'name', 'bio', 'location', 'birth_date']
+  fields = ['picture', 'name', 'location', 'birth_date', 'bio']
   template_name = 'base/profile_edit.html'
 
   def get_success_url(self):
     pk = self.kwargs['pk']
-    return reverse_lazy('profile', kwargs={'pk':pk})
+    return reverse_lazy('profile', kwargs={'pk': pk})
   
   def test_func(self):
     profile = self.get_object()
     return self.request.user == profile.user
+  
+class AddFollower(View):
+  def post(self, request, pk, *args, **kwargs):
+    profile = UserProfile.objects.get(pk=pk)
+    profile.followers.add(request.user)
+
+    return redirect('profile', pk=profile.pk)
+  
+class RemoveFollower(View):
+  def post(self, request, pk, *args, **kwargs):
+    profile = UserProfile.objects.get(pk=pk)
+    profile.followers.remove(request.user)
+
+    return redirect('profile', pk=profile.pk)
