@@ -1,22 +1,44 @@
 {% include 'base.html' %}
 <div class="container relative mx-auto p-6">
-  <div class="flex flex-row">
-    <div class="flex flex-row p-6 mb-16 mx-auto w-full">
-      <div class="mb-32 space-y-3 md:w-1/2 bg-gray-100 p-6 rounded-s-lg h-full">
-        <div class="flex justify-end">
+  <div class="flex flex-row justify-center">
+      <div class="mb-2 md:w-1/2 bg-gray-100 p-6 rounded-s-lg z-0">
+        <div class="flex flex-row justify-end">
+          {% if request.user == user %}
           <a href="{% url 'profile-edit' profile.pk %}"><i class="fa-regular fa-pen-to-square"></i></a>
+          {% endif %}
+          <a href="{{ user.profile.picture.url }}"><img src="{{user.profile.picture.url}}" alt="" class="h-40 w-40 rounded-full z-20 ml border border-orange-500 p-1"></a>
         </div>
-        <h1>Name: {{user.name}}</h1>
-        <h2>Username: {{user.username}}</h2>
-        <p>Bio: {{user.bio}}</p>
-        <p>Location: {{user.location}}</p>
+        <div class="text-slate-500 text-xl font-bold rounded-lg">
+        <h1>Name:  {{profile.name}}</h1>
+        <h2>Username: {{profile.user.username}}</h2>
+        <p>Bio: {{profile.bio}}</p>
+        <p>Location: {{profile.location}}</p>
+        <p>Date of Birth: {{profile.birth_date}}</p>
+
+        {% if request.user != user %}
+        <div class="flex justify-end">
+          {% if is_following %}
+            <div class="bg-red-600 text-white px-8 p-2 rounded-xl">
+              <form action="{% url 'unfollow' profile.pk %}" method="POST">
+                {% csrf_token %}
+                <button type="submit">Unfollow</button>
+              </form>
+            </div>
+          {% else %}
+          <div class="bg-green-700 text-white px-8 p-2 rounded-xl hover:bg-green-500">
+            <form action="{% url 'follow' profile.pk %}" method="POST">
+              {% csrf_token %}
+              <button type="submit">Follow</button>
+            </form>
+          </div>
+          {% endif %}
       </div>
-      <div class="flex md:w-1/2 rounded-s-lg">
-        <img src="{{user.profile.picture.url}}" alt="" >
-      </div>
-      <br>
-      
+      {% else %}
+      <p class="flex justify-end text-orange-500">Followers : {{ num_of_followers }}</p>
+      {% endif %}
     </div>
+  </div>
+    
 </div>
 <main class="container mx-auto py-8 px-4 flex">
   <div class="md:w-2/3 pr-8 md:block w-full">
