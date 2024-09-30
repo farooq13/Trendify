@@ -177,3 +177,18 @@ class RemoveFollower(View):
     profile.followers.remove(request.user)
 
     return redirect('profile', pk=profile.pk)
+  
+
+class UserSearch(View):
+  def get(self, request,*args, **kwargs):
+    query = request.GET.get('query')
+    profile_list = UserProfile.objects.filter(
+      Q(user__username__icontains=query)
+    )
+    
+    context = {
+      'query': query,
+      'profile_list': profile_list
+    }
+
+    return render(request, 'base/search.html', context)
