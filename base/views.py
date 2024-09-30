@@ -3,6 +3,7 @@ from django.views import View
 from django.views.generic.edit import UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post, Comment, UserProfile
 from django.db.models import Q
@@ -16,6 +17,7 @@ class PostList(View):
       Q(author=request.user)
     )
     form = PostForm()
+    
     
     context = {
       'posts': posts,
@@ -47,11 +49,13 @@ class PostDetail(View, LoginRequiredMixin):
     post = get_object_or_404(Post, pk=pk)
     form = CommentForm()
     comments = Comment.objects.filter(post=post)
+    num_of_comments = len(comments)
     
     context = {
       'post': post,
       'form': form,
-      'comments': comments
+      'comments': comments,
+      'num_of_comments': num_of_comments
     }
     return render(request, 'base/post_detail.html', context)
   
@@ -95,6 +99,38 @@ class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     post = self.get_object()
     return self.request.user == post.author
   
+
+class PostLike(LoginRequiredMixin, View):
+  def post (self, request, pk, *args, **kwargs):
+    post = get_object_or_404(Post, pk=pk)
+    user = request.user
+
+    is_like = False
+    if user in post.likes.all():
+      is_like = True
+      post.likes.remove(user)
+    if user in post.dislikes.all():
+      post.dislikes.remove(request.user)
+      post.likes.add(user)
+
+    next = request.POST.get('next')
+    return HttpResponseRedirect(next)
+  
+class PostDislike(LoginRequiredMixin, View):
+  def post(self, request, pk, *args, **kwargs):
+    post = get_object_or_404(Post, pk=pk)
+    user = request.user
+
+    is_dislike = False
+    if user in post.dislikes.all():
+      is_dislike = True
+      post.dislikes.remove(user)
+    if user in post.likes.all():
+      post.likes.remove(user)
+      post.dislikes.add(user)
+
+    next = request.POST.get('next')
+    return HttpResponseRedirect(next)
 
 class CommentReply(LoginRequiredMixin, View):
   def post(self, request, post_pk, pk, *args, **kwargs):
