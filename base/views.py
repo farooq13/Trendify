@@ -49,13 +49,11 @@ class PostDetail(View, LoginRequiredMixin):
     post = get_object_or_404(Post, pk=pk)
     form = CommentForm()
     comments = Comment.objects.filter(post=post)
-    num_of_comments = len(comments)
     
     context = {
       'post': post,
       'form': form,
       'comments': comments,
-      'num_of_comments': num_of_comments
     }
     return render(request, 'base/post_detail.html', context)
   
@@ -105,9 +103,7 @@ class PostLike(LoginRequiredMixin, View):
     post = get_object_or_404(Post, pk=pk)
     user = request.user
 
-    is_like = False
     if user in post.likes.all():
-      is_like = True
       post.likes.remove(user)
     if user in post.dislikes.all():
       post.dislikes.remove(request.user)
@@ -121,9 +117,7 @@ class PostDislike(LoginRequiredMixin, View):
     post = get_object_or_404(Post, pk=pk)
     user = request.user
 
-    is_dislike = False
     if user in post.dislikes.all():
-      is_dislike = True
       post.dislikes.remove(user)
     if user in post.likes.all():
       post.likes.remove(user)
@@ -167,7 +161,37 @@ class CommentDelete(LoginRequiredMixin, DeleteView):
   def get_success_url(self):
     post_pk = self.kwargs['post_pk']
     return reverse_lazy('post-detail', kwargs={'pk': post_pk})
-  
+
+class CommentLike(LoginRequiredMixin, View):
+  def post(self, request,post_pk, pk, *args, **kwargs):
+    post = get_object_or_404(Post, pk=post_pk)
+    comment = get_object_or_404(Comment, pk=pk)
+    user = request.user
+
+    if user in comment.likes.all():
+      comment.likes.remove(user)
+    if user in comment.dislikes.all():
+      comment.dislikes.remove(user)
+      comment.likes.add(user)
+
+    next = request.POST.get('next')
+    return HttpResponseRedirect(next)
+
+class CommentDislike(LoginRequiredMixin, View):
+  def post(self, request,post_pk, pk, *args, **kwargs):
+    post = get_object_or_404(Post, pk=post_pk)
+    comment = get_object_or_404(Comment, pk=pk)
+    user = request.user
+
+    if user in comment.dislikes.all():
+      comment.dislikes.remove(user)
+    if user in comment.likes.all():
+      comment.likes.remove(user)
+      comment.dislikes.add(user)
+    
+    next = request.POST.get('next')
+    return HttpResponseRedirect(next)
+
 
 class Profile(View):
   def get(self, request, pk, *args, **kwargs):

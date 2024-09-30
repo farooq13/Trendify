@@ -16,8 +16,16 @@
           <h3 class="font-bold">@{{comment.author.username}} {{ comment.author.name }} <span>{{ comment.created_on|timesince }}</span></h3>
           <p class="mt-4"><a href="{% url 'post-detail' post.pk %}">{{ comment }}</a></p>
           <div class="flex flex-row space-x-12 mt-8 mx-6">
-            <button><i class="fa-regular fa-thumbs-up"></i></button>
-            <button><i class="fa-regular fa-thumbs-down"></i></button>
+            <form action="{% url 'comment-like' post.pk comment.pk %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.path }}">
+            <button><i class="fa-regular fa-thumbs-up"></i><span>{{ comment.likes.all.count }}</span></button>
+          </form>
+          <form action="{% url 'comment-dislike' post.pk comment.pk %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button><i class="fa-regular fa-thumbs-down"></i><span>{{ comment.dislikes.all.count }}</span></button>
+          </form>
             <button><i class="fa-regular fa-comment"></i></button>
             <button><i class="fa-solid fa-share"></i></button>
         </div>
