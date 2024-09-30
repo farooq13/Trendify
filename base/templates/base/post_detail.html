@@ -8,7 +8,7 @@
   <div class="md:w-2/3 pr-8 md:block w-full">
       <div class="max-w-2/3 space-y-4">
         <div class="mt-6">
-            <form class="mb-8 flex float-row space-x-6" method="POST" accept="">
+            <form class="mb-8 flex float-row space-x-6" method="POST" accept="" action="">
               {% csrf_token %}
               {% render_field form.comment  placeholder="Comment on this post..." rows=2 class+="rounded-lg border border-gray-300 resize-none" %}
               <button type="submit" class="bg-blue-500 text-white px-4 py-0 rounded-xl hover:bg-blue-600 transition duration-200">Send</button>
