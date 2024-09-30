@@ -10,8 +10,21 @@
       <h3 class="font-bold"><a href="{% url 'profile' post.author.profile.pk %}">@{{post.author.username}} {{ post.author.name }} </a><span>{{ post.created_on|timesince }}</span></h3>
       <p><a href="{% url 'post-detail' post.id %}">{{ post.body }}</a></p>
       <div class="flex flex-row space-x-12 mt-8 mx-6">
-          <button><i class="fa-regular fa-thumbs-up"></i></button>
-          <button><i class="fa-regular fa-thumbs-down"></i></button>
+      
+        <form action="{% url 'post-like' post.pk %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path}}">
+          <button><i class="fa-regular fa-thumbs-up"></i><span>{{ post.likes.all.count }}</span></button>
+        </form>
+      
+
+      
+        <form action="{% url 'post-dislike' post.pk %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button><i class="fa-regular fa-thumbs-down"></i><span>{{ post.dislikes.all.count }}</span></button>
+        </form>
+      
           <button>
             <a href="{% url 'post-detail' post.pk %}"><i class="fa-regular fa-comment"></i></a>
         </button>
