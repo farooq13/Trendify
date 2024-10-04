@@ -1,0 +1,54 @@
+<div class="container relative p-6">
+  <div class="flex flex-row p-1">
+    <!-- Post Notifications -->
+    {% for notification in notifications %}
+      {% if notification.post %}
+        <!-- Post Like Notificaion -->
+        {% if notification.notification_type == 1 %}
+        <div class="lex flex-row">
+          <a href="#">@{{notification.from_user}} Liked your post</a>
+          <span>&times;</span>
+        </div>
+        
+        <!-- End Post Like Notifications -->
+
+        <!-- Post comment Notifications -->
+        {% if notification.notification_type == 2 %}
+        <div class="flex flex-row">
+          <a href="#">@{{ notification.from_user }} commented on your post</a>
+          <span>&times;</span>
+        </div>
+        {% endif %}
+        <!-- End Post comment Notifications -->
+      {% endif %}
+
+      <!-- Comment Notifications -->
+       {% if notification.comment %}
+       <!-- Comment Like Notifications -->
+        {% if notification.notification_type == 1 %}
+        <div class="flex flex-row">
+          <a href="#">@{{ notification.from_user }} Liked your comment</a>
+          <span>&times;</span>
+        </div>
+        {% endif %}
+       <!-- End comment Like Notifications -->
+
+       <!-- Comment Reply Notification -->
+        {% if notification.notification_type == 2 %}
+        <div class="flex flex-row">
+          <a href="#">@{{ notification.from_user }} replied to your comment</a>
+        </div>
+        {% endif %}
+       <!-- End Comment Reply Notification -->
+       {% endif %}
+      <!-- End Comment Notifications -->
+      <!-- Follow Notification -->
+       {% else %}
+       <div class="flex">
+        <a href="#">@{{ notification.from_user }} started following you</a>
+       </div>
+       {% endif %}
+    {% endfor %}
+    <!-- End Post Notificatons -->
+  </div>
+</div>
