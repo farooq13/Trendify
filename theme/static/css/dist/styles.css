@@ -1134,6 +1134,10 @@ select {
   background-color: rgb(13 148 136 / var(--tw-bg-opacity));
 }
 
+.bg-transparent {
+  background-color: transparent;
+}
+
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
@@ -1231,10 +1235,6 @@ select {
 
 .pt-6 {
   padding-top: 1.5rem;
-}
-
-.text-left {
-  text-align: left;
 }
 
 .text-center {
