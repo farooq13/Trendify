@@ -1,13 +1,21 @@
+{% load static %}
+
+<style>
+  .d-none{
+    display: none;
+  }
+</style>
 <div class="container relative p-6">
-  <div class="flex flex-row p-1">
+  <span onclick="showNotifications()">{{ notification.count }}</span>
+  <div class="flex flex-row p-1 d-none" id="notification-container">
     <!-- Post Notifications -->
     {% for notification in notifications %}
       {% if notification.post %}
         <!-- Post Like Notificaion -->
         {% if notification.notification_type == 1 %}
         <div class="lex flex-row">
-          <a href="#">@{{notification.from_user}} Liked your post</a>
-          <span>&times;</span>
+          <a href="{ url 'post-notification' notification.pk post.pk %}">@{{notification.from_user}} Liked your post</a>
+          <span onclick="removeNotification(`{% url 'notification-remove' notification.pk %}`, `{{ request.path }}`)">&times;</span>
         </div>
         
         <!-- End Post Like Notifications -->
@@ -15,8 +23,8 @@
         <!-- Post comment Notifications -->
         {% if notification.notification_type == 2 %}
         <div class="flex flex-row">
-          <a href="#">@{{ notification.from_user }} commented on your post</a>
-          <span>&times;</span>
+          <a href="{% url 'post-notification' notification.pk post.pk %}">@{{ notification.from_user }} commented on your post</a>
+          <span onclick="removeNotification(`{% url 'notification-remove' notification.pk %}`, `{{ request.path }}`)">&times;</span>
         </div>
         {% endif %}
         <!-- End Post comment Notifications -->
@@ -27,8 +35,8 @@
        <!-- Comment Like Notifications -->
         {% if notification.notification_type == 1 %}
         <div class="flex flex-row">
-          <a href="#">@{{ notification.from_user }} Liked your comment</a>
-          <span>&times;</span>
+          <a href="{% url 'post-notification' notification.pk notification.comment.post.pk %}">@{{ notification.from_user }} Liked your comment</a>
+          <span onclick="removeNotification(`{% url 'notification-remove' notification.pk %}`, `{{ request.path }}`)">&times;</span>
         </div>
         {% endif %}
        <!-- End comment Like Notifications -->
@@ -36,7 +44,8 @@
        <!-- Comment Reply Notification -->
         {% if notification.notification_type == 2 %}
         <div class="flex flex-row">
-          <a href="#">@{{ notification.from_user }} replied to your comment</a>
+          <a href="{% url 'post-notification' notification.pk notification.comment.post.p}">@{{ notification.from_user }} replied to your comment</a>
+          <span onclick="removeNotification(`{% url 'notification-remove' notification.pk %}`, `{{ request.path }}`)">&times;</span>
         </div>
         {% endif %}
        <!-- End Comment Reply Notification -->
@@ -45,10 +54,12 @@
       <!-- Follow Notification -->
        {% else %}
        <div class="flex">
-        <a href="#">@{{ notification.from_user }} started following you</a>
+        <a href="{% url 'follow-notification' notification.pk notification.from_user.pk %}">@{{ notification.from_user }} started following you</a>
+        <span onclick="removeNotification(`{% url 'notification-remove' notification.pk %}`, `{{ request.path }}`)">&times;</span>
        </div>
        {% endif %}
     {% endfor %}
     <!-- End Post Notificatons -->
   </div>
 </div>
+

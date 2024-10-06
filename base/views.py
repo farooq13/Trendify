@@ -3,7 +3,7 @@ from django.views import View
 from django.views.generic.edit import UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post, Comment, UserProfile, Notification
 from django.db.models import Q
@@ -67,6 +67,13 @@ class PostDetail(View, LoginRequiredMixin):
       comment.post = post
       comment.save()
 
+    notification = Notification.objects.create(
+      notification_type = 2,
+      from_user = request.user,
+      to_user = post.author,
+      post=post
+    )
+
     context = {
       'post': post,
       'form': form
@@ -109,6 +116,13 @@ class PostLike(LoginRequiredMixin, View):
       post.dislikes.remove(request.user)
       post.likes.add(user)
 
+      notification = Notification.objects.create(
+        notification_type = 1,
+        from_user = request.user,
+        to_user = post.author,
+        post = post
+      )
+
     next = request.POST.get('next')
     return HttpResponseRedirect(next)
   
@@ -138,6 +152,13 @@ class CommentReply(LoginRequiredMixin, View):
       new_comment.parent = parent_comment
       new_comment.author = request.user
       new_comment.save()
+
+      notification = Notification.objects.create(
+        notification_type = 2,
+        from_user = new_comment.author,
+        to_user = parent_comment.author,
+        comment = parent_comment
+      )
       
       return redirect('post-detail', pk=post_pk)
   
@@ -174,6 +195,13 @@ class CommentLike(LoginRequiredMixin, View):
       comment.dislikes.remove(user)
       comment.likes.add(user)
 
+      notification = Notification.objects.create(
+        notification_type = 1,
+        from_user = request.user,
+        to_user = comment.author,
+        comment = comment
+      )
+
     next = request.POST.get('next')
     return HttpResponseRedirect(next)
 
@@ -208,7 +236,13 @@ class Profile(View):
       else:
         is_following = False
 
-    context = {'profile': profile, 'user': user, 'posts': posts, 'followers': followers, 'num_of_followers': num_of_followers, 'is_following': is_following}
+    context = {
+      'profile': profile, 
+      'user': user, 'posts': posts, 
+      'followers': followers, 
+      'num_of_followers': num_of_followers, 
+      'is_following': is_following
+      }
     return render(request, 'base/profile.html', context)
   
 class ProfileEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -228,6 +262,12 @@ class AddFollower(View):
   def post(self, request, pk, *args, **kwargs):
     profile = UserProfile.objects.get(pk=pk)
     profile.followers.add(request.user)
+
+    notification = Notification.objects.create(
+      notification_type = 3,
+      from_user = request.user,
+      to_user = profile.user
+    )
 
     return redirect('profile', pk=profile.pk)
   
@@ -273,3 +313,10 @@ class FollowNotification(View):
     notification.user_has_seen = True
     notification.save()
     return redirect('profile', pk=profile.pk)
+  
+class RemoveNotification(View):
+  def delete(self, request, notification_pk, *args, **kwargs):
+    notification = Notification.objects.get(pk=notification_pk)
+    notification.user_has_seen = True
+    notification.save()
+    return HttpResponse('success', content_type='text/plain')
