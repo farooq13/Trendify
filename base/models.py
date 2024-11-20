@@ -8,6 +8,7 @@ from django.dispatch import receiver
 
 class Post(models.Model):
   body  = models.TextField()
+  image = models.ImageField(upload_to='uploads/post_photos', null=True, blank=True)
   author = models.ForeignKey(User, on_delete=models.CASCADE)
   likes = models.ManyToManyField(User, related_name='likes', blank=True)
   dislikes = models.ManyToManyField(User, related_name='dislikes', blank=True)
