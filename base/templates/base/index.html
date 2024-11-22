@@ -15,9 +15,10 @@
     {% include 'base/navbar.html' %}
     <main class="container mx-auto py-8 px-4 flex">
         <div class="md:w-2/3 pr-8 md:block w-full">
-            <form class="mb-8" method="POST" accept="">
+            <form class="mb-8" method="POST" accept="" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% render_field form.body  placeholder="What is happening around you?" rows=3 class+="w-full p-3 rounded-lg border border-gray-300 resize-none" %}
+                {% render_field form.image class+="rounded-lg" %}
                 <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200">Post</button>
                 
             </form>
