@@ -3,9 +3,10 @@
 
 <div class="container relative mx-auto p-6 mt-32">
   <div class="flex justify-center">
-  <form action="" method="POST">
+  <form action="" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    {% render_field form.body rows="2" class+="w-full p-4 rounded-lg border border-gray-300 resize-none" %}
+    {% render_field form.body rows="5" class+="w-full p-4 rounded-lg border border-gray-300 resize-none" %}
+    {% render_field form.image rows="5" class+="p-4 rounded-lg " %}
     <div class="flex flex-row space-x-12 p-6">
       <a href="{{ request.META.HTTP_REFERER }}" class="px-6 p-2 text-white bg-teal-600 hover:bg-teal-400 hover:px-8">Cancel</a>
       <button type="submit" class="px-12 p-2 text-white bg-teal-600 hover:bg-teal-400 hover:px-16">Update</button>

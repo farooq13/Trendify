@@ -9,6 +9,9 @@
       {% endif %}
       <h3 class="font-bold"><a href="{% url 'profile' post.author.profile.pk %}">@{{post.author.username}} {{ post.author.name }} </a><span>{{ post.created_on|timesince }}</span></h3>
       <p><a href="{% url 'post-detail' post.id %}">{{ post.body }}</a></p>
+      {% if post.image %}
+        <img src="{{ post.image.url }}" alt="" style="height: 50vh; max-width: 50%; margin-top: 10px; border-radius: 10px;">
+      {% endif %}
       <div class="flex flex-row space-x-12 mt-8 mx-6">
       
         <form action="{% url 'post-like' post.pk %}" method="POST">

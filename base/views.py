@@ -30,7 +30,7 @@ class PostList(View):
       Q(author__profile__followers__in=[request.user.id]) |
       Q(author=request.user)
     )
-    form = PostForm(request.POST)
+    form = PostForm(request.POST, request.FILES)
 
     if form.is_valid():
       post = form.save(commit=False)
@@ -83,7 +83,7 @@ class PostDetail(View, LoginRequiredMixin):
 class PostEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
   model = Post
   template_name = 'base/post_edit.html'
-  fields = ['body']
+  fields = ['body', 'image']
 
   def get_success_url(self):
     pk = self.kwargs['pk']
