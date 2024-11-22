@@ -30,6 +30,9 @@
               <h3 class="font-bold"><a href="{% url 'profile' post.author.pk %}">@{{post.author.username}} {{ post.author.name }} </a><span>{{ post.created_on|timesince }}</span></h3>
             </div>
               <p class="mt-4"><a href="{% url 'post-detail' post.pk %}">{{ post.body }}</a></p>
+              {% if post.image %}
+                <img src="{{ post.image.url }}" alt="" style="height: 50vh;max-width: 50%;border-radius: 10px; margin-top: 10px;">
+              {% endif %}
             <div class="flex flex-row space-x-12 mt-8 mx-6">
               <form action="{% url 'post-like' post.pk %}" method="POST">
                 {% csrf_token %}
