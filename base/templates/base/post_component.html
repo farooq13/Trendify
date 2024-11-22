@@ -7,7 +7,16 @@
           <a href="{% url 'post-edit' post.id %}"><i class="fa-regular fa-pen-to-square"></i></a>
       </div>
       {% endif %}
-      <h3 class="font-bold"><a href="{% url 'profile' post.author.profile.pk %}">@{{post.author.username}} {{ post.author.name }} </a><span>{{ post.created_on|timesince }}</span></h3>
+      <div style="vertical-align: middle;">
+        <img src="{{ post.author.profile.picture.url }}" alt="" style="width: 50px; height: 50px; border-radius: 50px; float:left;">
+      </div>
+      <h3 class="font-bold  mt-2">
+        <a href="{% url 'profile' post.author.profile.pk %}" class="space-x-4">@{{post.author.username}} {{ post.author.name }}
+        </a>
+        <span>{{ post.created_on|timesince }}</span>
+      </h3>
+      <br>
+      
       <p><a href="{% url 'post-detail' post.id %}">{{ post.body }}</a></p>
       {% if post.image %}
         <img src="{{ post.image.url }}" alt="" style="height: 50vh; max-width: 50%; margin-top: 10px; border-radius: 10px;">
