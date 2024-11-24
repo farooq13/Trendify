@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .models import Post, Comment, UserProfile, Notification
+from .models import Post, Comment, UserProfile, Notification, ThreadModel, Message
 from django.db.models import Q
 from .forms import PostForm, CommentForm, ProfileForm
 
@@ -320,3 +320,17 @@ class RemoveNotification(View):
     notification.user_has_seen = True
     notification.save()
     return HttpResponse('success', content_type='text/plain')
+  
+
+
+class ListThread(View):
+  def get(self, request, *args, **kwargs):
+    threads = ThreadModel.objects.filter(
+      Q(user=request.user) |
+      Q(receiver=request.user)
+    )
+
+    context = {
+      'threads': threads
+    }
+    return render(request, 'base/inbox.html', context)
