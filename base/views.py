@@ -3,11 +3,12 @@ from django.views import View
 from django.views.generic.edit import UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post, Comment, UserProfile, Notification, ThreadModel, Message
 from django.db.models import Q
-from .forms import PostForm, CommentForm, ProfileForm
+from .forms import PostForm, CommentForm, ProfileForm, ThreadForm
 
   
 class PostList(View):
@@ -334,3 +335,29 @@ class ListThread(View):
       'threads': threads
     }
     return render(request, 'base/inbox.html', context)
+  
+
+class CreateThread(View):
+  def get(self, request, *args, **kwargs):
+    form = ThreadForm()
+
+    context = {
+      'form': form
+    }
+    return render(request, 'base/create_thread.html', context)
+  
+  def post(self, request, *args, **kwargs):
+    form = ThreadForm(request.POST)
+    username = request.POST.get('username')
+    
+    try:
+      receiver = User.objects.get(username=username)
+      if ThreadModel.objects.filter(use=request.user, receiver=receiver).exists():
+        thread = ThreadModel.objects.filter(user=request.user, receiver=receiver)[0]
+        return redirect('thread', pk=thread.pk)
+      elif ThreadModel.objects.filter(user=receiver, receiver=request.user).exists():
+        thread = ThreadModel.objects.filter(user=receiver, receiver=request.user)[0]
+        return redirect('thread', pk=thread.pk)
+
+    except:
+      return redirect('thread', pk=thread.pk)
