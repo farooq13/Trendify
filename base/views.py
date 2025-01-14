@@ -105,7 +105,6 @@ class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     post = self.get_object()
     return self.request.user == post.author
   
-
 class PostLike(View):
     def post(self, request, pk, *args, **kwargs):
       post = Post.objects.get(pk=pk)
