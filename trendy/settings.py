@@ -1,6 +1,16 @@
 
 from pathlib import Path
 
+from environ import Env
+env = Env()
+env.read_env()
+
+ENVIROMENT = env('ENVIROMENT', default='production')
+# from environ import Env
+# env = Env()
+# env.read_env()
+# ENVIROMENT = env('ENVIROMENT', default='production')
+ 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -9,12 +19,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^kf9lb-c&@uv3tj1+1#k21kmdg6jnh(-39-5&zmt139iwu1!p!'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+if ENVIROMENT == 'production':
+  DEBUG = True
+else:
+  DEBUG = False
+
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -34,9 +48,10 @@ INSTALLED_APPS = [
 
     'base',
     'tailwind',
-    'theme',
+
     'django_browser_reload',
     'widget_tweaks',
+    'admin_honeypot',
 ]
 
 SITE_ID = 1
@@ -50,10 +65,11 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-TAILWIND_APP_NAME = 'theme'
+# TAILWIND_APP_NAME = 'theme'
 
 INTERNAL_IPS = [
   '127.0.0.1',
+  'localhost:8000'
 ]
 
 NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"
@@ -157,3 +173,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+ACCOUNT_USERNAME_BLACKLIST = ['admin', 'profile', 'accounts', 'post', 'encrypt']
