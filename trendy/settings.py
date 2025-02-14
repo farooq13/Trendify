@@ -6,11 +6,7 @@ env = Env()
 env.read_env()
 
 ENVIROMENT = env('ENVIROMENT', default='production')
-# from environ import Env
-# env = Env()
-# env.read_env()
-# ENVIROMENT = env('ENVIROMENT', default='production')
- 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,7 +24,7 @@ if ENVIROMENT == 'development':
 else:
   DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -179,4 +175,4 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ACCOUNT_USERNAME_BLACKLIST = ['admin', 'profile', 'accounts', 'post', 'encrypt']
+ACCOUNT_USERNAME_BLACKLIST = ['admin', 'profile', 'post', 'encrypt']
