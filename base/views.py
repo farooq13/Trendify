@@ -24,7 +24,7 @@ class PostList(View):
       'posts': posts,
       'form': form
     }
-    return render(request, 'base/index.html', context)
+    return render(request, 'base/base.html', context)
   
   def post(self, request, *args, **kwargs):
     posts = Post.objects.filter(
@@ -42,7 +42,7 @@ class PostList(View):
       'posts': posts,
       'form': form
     }
-    return render(request, 'base/index.html', context)
+    return render(request, 'base/base.html', context)
   
 
 class PostDetail(View, LoginRequiredMixin):
