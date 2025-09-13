@@ -4,7 +4,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
+    path('encrypt/', admin.site.urls),
     path('', include('base.urls')),
     path('__reload__/', include('django_browser_reload.urls')),
     path('accounts/', include('allauth.urls')),

@@ -24,7 +24,7 @@ class PostList(View):
       'posts': posts,
       'form': form
     }
-    return render(request, 'base/index.html', context)
+    return render(request, 'base/base.html', context)
   
   def post(self, request, *args, **kwargs):
     posts = Post.objects.filter(
@@ -42,7 +42,7 @@ class PostList(View):
       'posts': posts,
       'form': form
     }
-    return render(request, 'base/index.html', context)
+    return render(request, 'base/base.html', context)
   
 
 class PostDetail(View, LoginRequiredMixin):
@@ -105,38 +105,56 @@ class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     post = self.get_object()
     return self.request.user == post.author
   
+class PostLike(View):
+    def post(self, request, pk, *args, **kwargs):
+      post = Post.objects.get(pk=pk)
 
-class PostLike(LoginRequiredMixin, View):
-  def post (self, request, pk, *args, **kwargs):
-    post = get_object_or_404(Post, pk=pk)
-    user = request.user
+      is_dislike = False
+      for dislike in post.dislikes.all():
+        if dislike == request.user:
+          post.dislikes.remove(request.user)
+          break
+    
+      is_like = False
+      for like in post.likes.all():
+        if like == request.user:
+          is_like = True
+          break
+      
+      if not is_like:
+        post.likes.add(request.user)
 
-    if user in post.likes.all():
-      post.likes.remove(user)
-    if user in post.dislikes.all():
-      post.dislikes.remove(request.user)
-      post.likes.add(user)
-
-      notification = Notification.objects.create(
+        notification = Notification.objects.create(
         notification_type = 1,
         from_user = request.user,
         to_user = post.author,
         post = post
       )
 
-    next = request.POST.get('next')
-    return HttpResponseRedirect(next)
-  
-class PostDislike(LoginRequiredMixin, View):
-  def post(self, request, pk, *args, **kwargs):
-    post = get_object_or_404(Post, pk=pk)
-    user = request.user
+      if is_like:
+        post.likes.remove(request.user)
 
-    if user in post.dislikes.all():
-      post.dislikes.remove(user)
-    if user in post.likes.all():
-      post.likes.remove(user)
-      post.dislikes.add(user)
+      next = request.POST.get('next')
+      return HttpResponseRedirect(next)
+    
+class PostDislike(View):
+  def post(self, request, pk, *args, **kwargs):
+    post = Post.objects.get(pk=pk)
+
+    is_like = False
+    for like in post.likes.all():
+      if like == request.user:
+        post.likes.remove(request.user)
+        break
+    is_dislikes = False
+    for dislike in post.dislikes.all():
+      if dislike == request.user:
+        is_dislikes = True
+        break
+    if not is_dislikes:
+      post.dislikes.add(request.user)
+    if is_dislikes:
+      post.dislikes.remove(request.user)
 
     next = request.POST.get('next')
     return HttpResponseRedirect(next)

@@ -1,0 +1,3 @@
+# Trendify
+
+## Social networking app
